@@ -5,7 +5,7 @@ var assert = require('assert')
 
 describe('bayes() init', function () {
   it('valid options (falsey or with an object) do not raise Errors', function () {
-    var validOptionsCases = [ undefined, {} ];
+    var validOptionsCases = [undefined, {}];
 
     validOptionsCases.forEach(function (validOptions) {
       var classifier = bayes(validOptions)
@@ -14,7 +14,7 @@ describe('bayes() init', function () {
   })
 
   it('invalid options (truthy and not object) raise TypeError during init', function () {
-    var invalidOptionsCases = [ null, 0, 'a', [] ];
+    var invalidOptionsCases = [null, 0, 'a', []];
 
     invalidOptionsCases.forEach(function (invalidOptions) {
       assert.throws(function () { bayes(invalidOptions) }, Error)
@@ -50,29 +50,29 @@ describe('bayes using custom tokenizer', async function () {
 
 describe('bayes serializing/deserializing its state', function () {
   it('serializes/deserializes its state as JSON correctly.', async function () {
-      var classifier = bayes()
+    var classifier = bayes()
 
-      await classifier.learn('Fun times were had by all', 'positive')
-      await classifier.learn('sad dark rainy day in the cave', 'negative')
+    await classifier.learn('Fun times were had by all', 'positive')
+    await classifier.learn('sad dark rainy day in the cave', 'negative')
 
-      var jsonRepr = classifier.toJson()
+    var jsonRepr = classifier.toJson()
 
-      // check serialized values
-      var state = JSON.parse(jsonRepr)
+    // check serialized values
+    var state = JSON.parse(jsonRepr)
 
-      // ensure classifier's state values are all in the json representation
-      bayes.STATE_KEYS.forEach(function (k) {
-        assert.deepEqual(state[k], classifier[k])
-      })
-
-      var revivedClassifier = bayes.fromJson(jsonRepr)
-
-      // ensure the revived classifier's state is same as original state
-      bayes.STATE_KEYS.forEach(function (k) {
-        assert.deepEqual(revivedClassifier[k], classifier[k])
-      })
-
+    // ensure classifier's state values are all in the json representation
+    bayes.STATE_KEYS.forEach(function (k) {
+      assert.deepEqual(state[k], classifier[k])
     })
+
+    var revivedClassifier = bayes.fromJson(jsonRepr)
+
+    // ensure the revived classifier's state is same as original state
+    bayes.STATE_KEYS.forEach(function (k) {
+      assert.deepEqual(revivedClassifier[k], classifier[k])
+    })
+
+  })
 
   it('allows de-serializing an empty state', function (done) {
     var classifier = bayes();
@@ -116,7 +116,7 @@ describe('bayes .learn() correctness', function () {
     await classifier.learn('I dont really know what to make of this.', 'neutral')
 
     //now test it to see that it correctly categorizes a new document
-    assert.equal(await classifier.categorize('awesome, cool, amazing!! Yay.'), 'positive')
+    assert.equal(JSON.stringify(await classifier.categorize('awesome, cool, amazing!! Yay.')), JSON.stringify(['positive']))
   })
 
   //topic analysis test
@@ -148,7 +148,7 @@ describe('bayes .learn() correctness', function () {
     assert.equal(japaneseFrequencyCount['Chinese'], 1)
 
     //now test it to see that it correctly categorizes a new document
-    assert.equal(await classifier.categorize('Chinese Chinese Chinese Tokyo Japan'), 'chinese')
+    assert.equal(JSON.stringify(await classifier.categorize('Chinese Chinese Chinese Tokyo Japan')), JSON.stringify(['chinese']))
   })
 
   it('correctly tokenizes cyrlic characters', async function () {
