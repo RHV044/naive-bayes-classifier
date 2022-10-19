@@ -1,6 +1,5 @@
 # `bayes`: A Naive-Bayes classifier for node.js
 
-
 `bayes` takes a document (piece of text), and tells you what category that document belongs to.
 
 ## What can I use this for?
@@ -20,30 +19,32 @@ npm install bayes
 ## Usage
 
 ```javascript
-var bayes = require('bayes')
+var bayes = require("bayes");
 
-var classifier = bayes()
+var classifier = bayes();
 
 // teach it positive phrases
 
-await classifier.learn('amazing, awesome movie!! Yeah!! Oh boy.', 'positive')
-await classifier.learn('Sweet, this is incredibly, amazing, perfect, great!!', 'positive')
+await classifier.learn("amazing, awesome movie!! Yeah!! Oh boy.", "positive");
+await classifier.learn(
+  "Sweet, this is incredibly, amazing, perfect, great!!",
+  "positive"
+);
 
 // teach it a negative phrase
 
-await classifier.learn('terrible, shitty thing. Damn. Sucks!!', 'negative')
+await classifier.learn("terrible, shitty thing. Damn. Sucks!!", "negative");
 
 // now ask it to categorize a document it has never seen before
 
-await classifier.categorize('awesome, cool, amazing!! Yay.')
-// => 'positive'
+await classifier.categorize("awesome, cool, amazing!! Yay.");
+// => ['positive']
 
 // serialize the classifier's state as a JSON string.
-var stateJson = classifier.toJson()
+var stateJson = classifier.toJson();
 
 // load the classifier back from its JSON representation.
-var revivedClassifier = bayes.fromJson(stateJson)
-
+var revivedClassifier = bayes.fromJson(stateJson);
 ```
 
 ## API
@@ -58,12 +59,16 @@ Eg.
 
 ```js
 var classifier = bayes({
-    tokenizer: function (text) { return text.split(' ') }
-})
+  tokenizer: function (text) {
+    return text.split(" ");
+  },
+});
 
 var classifier2 = bayes({
-    tokenizer: async function (body) { return request(segmentService, { body }) }
-})
+  tokenizer: async function (body) {
+    return request(segmentService, { body });
+  },
+});
 ```
 
 ### `classifier.learn(text, category)`

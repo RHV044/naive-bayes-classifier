@@ -1,8 +1,8 @@
 {
   "name": "bayes",
-  "description": "Naive Bayes Classifier for node.js",
-  "version": "1.0.0",
-  "author": "Tolga Tezel",
+  "description": "Naive Bayes Classifier for node.js (forked from Tolga Tezel's http://github.com/ttezel/bayes.git)",
+  "version": "1.1.0",
+  "author": "Rodrigo Vazquez",
   "keywords": [
     "naive",
     "bayes",
