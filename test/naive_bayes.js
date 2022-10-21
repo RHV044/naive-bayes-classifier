@@ -55,7 +55,7 @@ describe('bayes serializing/deserializing its state', function () {
     await classifier.learn('Fun times were had by all', 'positive')
     await classifier.learn('sad dark rainy day in the cave', 'negative')
 
-    var jsonRepr = classifier.toJson()
+    var jsonRepr = classifier.exportToJson()
 
     // check serialized values
     var state = JSON.parse(jsonRepr)
@@ -65,7 +65,7 @@ describe('bayes serializing/deserializing its state', function () {
       assert.deepEqual(state[k], classifier[k])
     })
 
-    var revivedClassifier = bayes.fromJson(jsonRepr)
+    var revivedClassifier = bayes.importFromJson(jsonRepr)
 
     // ensure the revived classifier's state is same as original state
     bayes.STATE_KEYS.forEach(function (k) {
@@ -76,21 +76,21 @@ describe('bayes serializing/deserializing its state', function () {
 
   it('allows de-serializing an empty state', function (done) {
     var classifier = bayes();
-    var jsonRepr = classifier.toJson()
-    bayes.fromJson(jsonRepr);
+    var jsonRepr = classifier.exportToJson()
+    bayes.importFromJson(jsonRepr);
     done();
   });
 
   it('fails on an missing fields', function (done) {
     var classifier = bayes();
-    var jsonRepr = classifier.toJson();
+    var jsonRepr = classifier.exportToJson();
 
     jsonRepr = JSON.parse(jsonRepr);
     delete jsonRepr.totalDocuments;
     jsonRepr = JSON.stringify(jsonRepr);
 
     try {
-      bayes.fromJson(jsonRepr);
+      bayes.importFromJson(jsonRepr);
     } catch (e) {
       return done();
     }
@@ -116,7 +116,7 @@ describe('bayes .learn() correctness', function () {
     await classifier.learn('I dont really know what to make of this.', 'neutral')
 
     //now test it to see that it correctly categorizes a new document
-    assert.equal(JSON.stringify(await classifier.categorize('awesome, cool, amazing!! Yay.')), JSON.stringify(['positive']))
+    assert.equal((await classifier.categorize('awesome, cool, amazing!! Yay.'))[0].name, 'positive')
   })
 
   //topic analysis test
@@ -148,7 +148,7 @@ describe('bayes .learn() correctness', function () {
     assert.equal(japaneseFrequencyCount['Chinese'], 1)
 
     //now test it to see that it correctly categorizes a new document
-    assert.equal(JSON.stringify(await classifier.categorize('Chinese Chinese Chinese Tokyo Japan')), JSON.stringify(['chinese']))
+    assert.equal((await classifier.categorize('Chinese Chinese Chinese Tokyo Japan'))[0].name, 'chinese')
   })
 
   it('correctly tokenizes cyrlic characters', async function () {
